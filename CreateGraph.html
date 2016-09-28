@@ -23,7 +23,12 @@
 <div id="mynetwork"></div>
 <br />
 <input type="text" id="nodeLabel"><input type="button" onclick="addNode()" value="Add Node"> <br />
-
+<br />
+<input type="text" id="deletionNode"><input type="button" onclick="deleteNode()" value="Delete Node"> <br />
+<br />
+<input type="text" id="edgeFrom"><input type="text" id="edgeTo"><input type="button" onclick="addEdge()" value="Add Edge"> <br />
+<br />
+<input type="text" id="deletionEdgeFrom"><input type="text" id="deletionEdgeTo"><input type="button" onclick="deleteEdge()" value="Delete Edge"> <br />
 
 <script type="text/javascript">
 
@@ -44,14 +49,54 @@
     //var length  = Object.keys(nodeHash).length;
     
     var newId = (Math.random() * 1e7).toString(32);
+    var nodeLabel = document.getElementById('nodeLabel').value;
       // Checking whether newID already exists.
-      if (typeof nodeHash[newId] == 'undefined'){
-        var nodeLabel = document.getElementById('nodeLabel').value;
+      if (typeof nodeHash[nodeLabel] == 'undefined'){
         nodes.add({id:newId, label:nodeLabel});
-        nodeHash[newId] = nodeLabel;
+        nodeHash[nodeLabel] = newId;
       }
+      // A node already exists with same Label.
       else{
+        window.alert("A node already exists with same Label.");
       }
+  }
+
+  function addEdge(){
+    var from =  document.getElementById('edgeFrom').value;
+    var to =  document.getElementById('edgeTo').value;
+    
+    // Checking Node with the specified label exists.
+    if (typeof nodeHash[from] != 'undefined' && typeof nodeHash[to] != 'undefined'){
+      var newId = (Math.random() * 1e7).toString(32);
+      edges.add({id:newId, from:nodeHash[from], to:nodeHash[to], arrows:"to"});
+    }
+    else{
+      window.alert("One/Both nodes entered is not present in the Graph.");
+    }
+  }
+
+  function deleteNode(){
+    var nodeData = document.getElementById('deletionNode').value;
+
+    // Checking Node with the specified label exists.
+    if (typeof nodeHash[nodeData] != 'undefined') {
+      nodes.remove({id:nodeHash[nodeData]});
+      nodeHash[nodeData] = undefined; //Removing the node from the hash.
+    }
+    else{
+      window.alert("Node doesn't exists");
+    }
+  }
+
+  function deleteEdge(){
+
+    var group2 = edges.get({
+      filter: function (item) {
+      return (item.from == document.getElementById('deletionEdgeFrom').value && item.to == document.getElementById('deletionEdgeTo').value);
+      }
+    });
+
+    console.log(group2);
   }
 
 </script>
